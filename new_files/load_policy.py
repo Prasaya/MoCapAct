@@ -3,14 +3,16 @@ from mocapact.sb3 import utils
 import numpy as np
 from dm_control.viewer import application
 
+model_name = "CMU_049_08"
+start_step = 0
+end_step = 156
 
-
-expert_path = "/home/prasaya/cs-projects/mocapact/MoCapAct/data/experts/CMU_009_12-165-363/eval_rsi/model"
+expert_path = f"/home/prasaya/cs-projects/mocapact/MoCapAct/data/experts/{model_name}-{start_step}-{end_step}/eval_rsi/model"
 expert = utils.load_policy(expert_path, observables.TIME_INDEX_OBSERVABLES)
 
 from mocapact.envs import tracking
 from dm_control.locomotion.tasks.reference_pose import types
-dataset = types.ClipCollection(ids=['CMU_009_12'], start_steps=[165], end_steps=[363])
+dataset = types.ClipCollection(ids=[model_name], start_steps=[start_step], end_steps=[end_step])
 env = tracking.MocapTrackingGymEnv(dataset)
 obs, done = env.reset(), False
 
@@ -22,11 +24,11 @@ def policy_fn(time_step):
     action, state = expert.predict(env.get_observation(time_step), state, deterministic=True)
     return action
 
-from dm_control import viewer
-viewer.launch(env.dm_env, policy=policy_fn)
+# from dm_control import viewer
+# viewer.launch(env.dm_env, policy=policy_fn)
 
-# viewer_app = application.Application(title='Distillation', width=1024, height=768)
-# viewer_app.launch(environment_loader=env.dm_env, policy=policy_fn)
+viewer_app = application.Application(title='Output', width=1024, height=768)
+viewer_app.launch(environment_loader=env.dm_env, policy=policy_fn)
 
 
 
