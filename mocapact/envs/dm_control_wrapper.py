@@ -14,7 +14,7 @@ import mujoco
 from typing import Any, Callable, Dict, Optional, Text, Tuple
 from dm_env import TimeStep
 from dm_control import composer
-from dm_control.locomotion.arenas import floors
+from dm_control.locomotion.arenas import floors, floor_with_walls
 from dm_control.locomotion.mocap import cmu_mocap_data
 from dm_control.locomotion.mocap import loader
 from dm_control.locomotion.tasks.reference_pose import tracking
@@ -58,6 +58,7 @@ class DmControlWrapper(core.Env):
         environment_kwargs: Optional[Dict[str, Any]] = None,
         act_noise: float = 0.,
         arena_size: Tuple[float, float] = (8., 8.),
+        use_walls: bool = False,
 
         # for rendering
         width: int = 640,
@@ -70,6 +71,8 @@ class DmControlWrapper(core.Env):
         """
         task_kwargs = task_kwargs or dict()
         environment_kwargs = environment_kwargs or dict()
+
+        self.use_walls = use_walls
 
         # create task
         self._env = self._create_env(
@@ -161,6 +164,8 @@ class DmControlWrapper(core.Env):
         return cmu_humanoid.CMUHumanoidPositionControlledV2020(initializer=initializer)
 
     def _get_arena(self, arena_size):
+        if self.use_walls:
+            return floor_with_walls.FloorWithWalls(arena_size)
         return floors.Floor(arena_size)
 
     def _create_observation_space(self) -> spaces.Dict:
