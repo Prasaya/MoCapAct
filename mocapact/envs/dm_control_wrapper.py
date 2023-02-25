@@ -14,7 +14,7 @@ import mujoco
 from typing import Any, Callable, Dict, Optional, Text, Tuple
 from dm_env import TimeStep
 from dm_control import composer
-from dm_control.locomotion.arenas import floors, floor_with_walls
+from dm_control.locomotion.arenas import floors
 from dm_control.locomotion.mocap import cmu_mocap_data
 from dm_control.locomotion.mocap import loader
 from dm_control.locomotion.tasks.reference_pose import tracking
